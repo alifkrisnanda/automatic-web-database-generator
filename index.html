@@ -3,135 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="jquery-ui-1.11.4/smoothness/jquery-ui.css" rel="stylesheet" />
+    <script src="jquery-ui-1.11.4/external/jquery/jquery.js"></script>
+    <script src="jquery-ui-1.11.4/jquery-ui.js"></script>
+    <script src="jquery-ui-1.11.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="jquery-ui-1.11.4/jquery-ui.theme.css">
+    <link rel="stylesheet" href="style.css">
+
     <title>Ruangan Monitoring</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-    </style>
+ 
 </head>
 <body>
+    <nav>
+        <a href="index.html" style="font-weight: bold;">Ruangan Monitoring</a>
+        <a href="generate_data.html">Generate Data Dummy</a>
+    </nav>
 
-<div id="timer">Countdown: <span id="countdown">5 detik</span></div>
+    <div class="atur">
+    <label for="waktuAwal">Pilih Waktu Awal:</label>
+    <input type="text" id="waktuAwal" name="waktuAwal" placeholder="Pilih tanggal">
 
-<table>
-    <thead>
-        <tr>
-            <th>ID Ruangan</th>
-            <th>Suhu (°C)</th>
-            <th>Kelembaban (%)</th>
-            <th>AC</th>
-            <th>Electricity</th>
-            <th>Water</th>
-            <th>WiFi</th>
-            <th>Alarm</th>
-            <th>Living Room</th>
-            <th>Dining Room</th>
-            <th>Kitchen</th>
-            <th>Bathroom 1</th>
-            <th>Bathroom 2</th>
-            <th>Bedroom 1</th>
-            <th>Bedroom 2</th>
-            <th>Garage</th>
-        </tr>
-    </thead>
-    <tbody id="dataBody">
-        <!-- Data dari database akan ditampilkan di sini -->
-    </tbody>
-</table>
+    <label for="waktuAkhir">Pilih Waktu Akhir:</label>
+    <input type="text" id="waktuAkhir" name="waktuAkhir" placeholder="Pilih tanggal">
 
-<script>
-var countdownTime = 5;
+    <button onclick="searchByTime()">Cari</button>
 
-function startCountdown() {
-    var countdown = setInterval(function() {
-        countdownTime--;
-        document.getElementById("countdown").innerHTML = countdownTime + " detik";
+    <table>
+        <thead>
+            <tr>
+                <th>ID Ruangan</th>
+                <th>Suhu (°C)</th>
+                <th>Kelembaban (%)</th>
+                <th>AC</th>
+                <th>Electricity</th>
+                <th>Water</th>
+                <th>WiFi</th>
+                <th>Alarm</th>
+                <th>Living Room</th>
+                <th>Dining Room</th>
+                <th>Kitchen</th>
+                <th>Bathroom 1</th>
+                <th>Bathroom 2</th>
+                <th>Bedroom 1</th>
+                <th>Bedroom 2</th>
+                <th>Garage</th>
+                <th>Tanggal</th>
+            </tr>
+        </thead>
+        <tbody id="dataBody">
+            <!-- Data dari database akan ditampilkan di sini -->
+        </tbody>
+    </div>
+    </table>
 
-        if (countdownTime === 0) {
-            clearInterval(countdown);
-            sendDataToServer();
-            // Setelah mengirim data, perbarui halaman setelah 2 detik (bisa disesuaikan)
-            setTimeout(function() {
-                location.reload();
-            }, 2000);
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi datepicker pada elemen input tanggal awal
+            $("#waktuAwal").datepicker({ dateFormat: 'yy-mm-dd', showButtonPanel: true });
+        
+            // Inisialisasi datepicker pada elemen input tanggal akhir
+            $("#waktuAkhir").datepicker({ dateFormat: 'yy-mm-dd', showButtonPanel: true });
+            
+            // ...
+            
+            // Ambil dan tampilkan data dari server saat halaman pertama dimuat
+            fetchDataFromServer();
+        });
+        
+
+        // Inisialisasi datepicker pada elemen input tanggal awal
+        $(function() {
+            $("#waktuAwal").datepicker({ dateFormat: 'yy-mm-dd', showButtonPanel: true });
+        });
+
+        // Inisialisasi datepicker pada elemen input tanggal akhir
+        $(function() {
+            $("#waktuAkhir").datepicker({ dateFormat: 'yy-mm-dd', showButtonPanel: true });
+        });
+
+        // Fungsi untuk mendapatkan data dari server tanpa parameter waktu
+        function fetchDataFromServer() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "get_data.php", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    displayData(data);
+                }
+            };
+            xhr.send();
         }
-    }, 1000);
-}
 
-function sendDataToServer() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "proses.php", true);
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText);
+        // Fungsi untuk melakukan pencarian berdasarkan waktu
+        function searchByTime() {
+            var startDate = document.getElementById('waktuAwal').value;
+            var endDate = document.getElementById('waktuAkhir').value;
+            fetchDataWithTime(startDate, endDate);
         }
-    };
-    xhr.send();
-}
 
-function fetchDataFromServer() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "get_data.php", true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var data = JSON.parse(xhr.responseText);
-            displayData(data);
+        // Fungsi untuk mendapatkan data dari server dengan parameter waktu
+        function fetchDataWithTime(startDate, endDate) {
+            var xhr = new XMLHttpRequest();
+            var url = "get_data.php";
+            
+            // Ganti parameter menjadi "waktuAwal" dan "waktuAkhir" jika dipilih
+            if (startDate && endDate) {
+                url += "?waktuAwal=" + startDate + "&waktuAkhir=" + endDate;
+            }
+
+            xhr.open("GET", url, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    displayData(data);
+                }
+            };
+            xhr.send();
         }
-    };
-    xhr.send();
-}
 
-function displayData(data) {
-    var tableBody = document.getElementById("dataBody");
-    var newRow = "";
+        // Fungsi untuk menampilkan data dalam tabel
+        function displayData(data) {
+            var tableBody = document.getElementById("dataBody");
+            var newRow = "";
 
-    // Kosongkan tabel
-    tableBody.innerHTML = "";
+            // Kosongkan tabel
+            tableBody.innerHTML = "";
 
-    for (var i = 0; i < data.length; i++) {
-        newRow += "<tr>";
-        newRow += "<td>" + data[i].id_ruangan + "</td>";
-        newRow += "<td>" + data[i].temperature + "</td>";
-        newRow += "<td>" + data[i].humidity + "</td>";
-        newRow += "<td>" + data[i].ac + "</td>";
-        newRow += "<td>" + data[i].electricity + "</td>";
-        newRow += "<td>" + data[i].water + "</td>";
-        newRow += "<td>" + data[i].wifi + "</td>";
-        newRow += "<td>" + data[i].alarm + "</td>";
-        newRow += "<td>" + data[i].livingroom + "</td>";
-        newRow += "<td>" + data[i].diningroom + "</td>";
-        newRow += "<td>" + data[i].kitchen + "</td>";
-        newRow += "<td>" + data[i].bathroom1 + "</td>";
-        newRow += "<td>" + data[i].bathroom2 + "</td>";
-        newRow += "<td>" + data[i].bedroom1 + "</td>";
-        newRow += "<td>" + data[i].bedroom2 + "</td>";
-        newRow += "<td>" + data[i].garage + "</td>";
-        newRow += "</tr>";
-    }
+            for (var i = 0; i < data.length; i++) {
+                newRow += "<tr>";
+                newRow += "<td>" + data[i].id_ruangan + "</td>";
+                newRow += "<td>" + data[i].temperature + "</td>";
+                newRow += "<td>" + data[i].humidity + "</td>";
+                newRow += "<td>" + data[i].ac + "</td>";
+                newRow += "<td>" + data[i].electricity + "</td>";
+                newRow += "<td>" + data[i].water + "</td>";
+                newRow += "<td>" + data[i].wifi + "</td>";
+                newRow += "<td>" + data[i].alarm + "</td>";
+                newRow += "<td>" + data[i].livingroom + "</td>";
+                newRow += "<td>" + data[i].diningroom + "</td>";
+                newRow += "<td>" + data[i].kitchen + "</td>";
+                newRow += "<td>" + data[i].bathroom1 + "</td>";
+                newRow += "<td>" + data[i].bathroom2 + "</td>";
+                newRow += "<td>" + data[i].bedroom1 + "</td>";
+                newRow += "<td>" + data[i].bedroom2 + "</td>";
+                newRow += "<td>" + data[i].garage + "</td>";
+                newRow += "<td>" + data[i].waktu + "</td>";
+                newRow += "</tr>";
+            }
 
-    // Tambahkan baris baru ke tabel
-    tableBody.innerHTML += newRow;
-}
+            // Tambahkan baris baru ke tabel
+            tableBody.innerHTML += newRow;
+        }
 
-// Mulai countdown saat halaman dimuat
-startCountdown();
-
-// Ambil dan tampilkan data dari server saat halaman pertama dimuat
-fetchDataFromServer();
-</script>
+        // Ambil dan tampilkan data dari server saat halaman pertama dimuat
+        fetchDataFromServer();
+    </script>
 
 </body>
 </html>

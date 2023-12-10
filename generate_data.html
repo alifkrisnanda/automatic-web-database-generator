@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruangan Monitoring</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <nav>
+        <a href="index.html" style="font-weight: bold;">Ruangan Monitoring</a>
+        <a href="generate_data.html">Generate Data Dummy</a>
+    </nav>
+
+<div class="waktu" id="timer">Countdown: <span id="countdown">10 detik</span></div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID Ruangan</th>
+            <th>Suhu (°C)</th>
+            <th>Kelembaban (%)</th>
+            <th>AC</th>
+            <th>Electricity</th>
+            <th>Water</th>
+            <th>WiFi</th>
+            <th>Alarm</th>
+            <th>Living Room</th>
+            <th>Dining Room</th>
+            <th>Kitchen</th>
+            <th>Bathroom 1</th>
+            <th>Bathroom 2</th>
+            <th>Bedroom 1</th>
+            <th>Bedroom 2</th>
+            <th>Garage</th>
+            <th>Tanggal</th>
+        </tr>
+    </thead>
+    <tbody id="dataBody">
+        <!-- Data dari database akan ditampilkan di sini -->
+    </tbody>
+</table>
+
+<script>
+var countdownTime = 10;
+
+function startCountdown() {
+    var countdown = setInterval(function() {
+        countdownTime--;
+        document.getElementById("countdown").innerHTML = countdownTime + " detik";
+
+        if (countdownTime === 0) {
+            clearInterval(countdown);
+            sendDataToServer();
+            // Setelah mengirim data, perbarui halaman setelah 2 detik (bisa disesuaikan)
+            setTimeout(function() {
+                location.reload();
+            }, 2000);
+        }
+    }, 1000);
+}
+
+function sendDataToServer() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "proses.php", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log(xhr.responseText);
+        }
+    };
+    xhr.send();
+}
+
+function fetchDataFromServer() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "get_data.php", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var data = JSON.parse(xhr.responseText);
+            displayData(data);
+        }
+    };
+    xhr.send();
+}
+
+function displayData(data) {
+    var tableBody = document.getElementById("dataBody");
+    var newRow = "";
+
+    // Kosongkan tabel
+    tableBody.innerHTML = "";
+
+    for (var i = 0; i < data.length; i++) {
+        newRow += "<tr>";
+        newRow += "<td>" + data[i].id_ruangan + "</td>";
+        newRow += "<td>" + data[i].temperature + "</td>";
+        newRow += "<td>" + data[i].humidity + "</td>";
+        newRow += "<td>" + data[i].ac + "</td>";
+        newRow += "<td>" + data[i].electricity + "</td>";
+        newRow += "<td>" + data[i].water + "</td>";
+        newRow += "<td>" + data[i].wifi + "</td>";
+        newRow += "<td>" + data[i].alarm + "</td>";
+        newRow += "<td>" + data[i].livingroom + "</td>";
+        newRow += "<td>" + data[i].diningroom + "</td>";
+        newRow += "<td>" + data[i].kitchen + "</td>";
+        newRow += "<td>" + data[i].bathroom1 + "</td>";
+        newRow += "<td>" + data[i].bathroom2 + "</td>";
+        newRow += "<td>" + data[i].bedroom1 + "</td>";
+        newRow += "<td>" + data[i].bedroom2 + "</td>";
+        newRow += "<td>" + data[i].garage + "</td>";
+        newRow += "<td>" + data[i].waktu + "</td>";
+        newRow += "</tr>";
+    }
+
+    // Tambahkan baris baru ke tabel
+    tableBody.innerHTML += newRow;
+}
+
+// Mulai countdown saat halaman dimuat
+startCountdown();
+
+// Ambil dan tampilkan data dari server saat halaman pertama dimuat
+fetchDataFromServer();
+</script>
+
+</body>
+</html>

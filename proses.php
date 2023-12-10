@@ -13,8 +13,8 @@ if ($conn->connect_error) {
 }
 
 
-$temperature = rand(18, 30); 
-$humidity = rand(30, 70); 
+$temperature = rand(20, 39); 
+$humidity = rand(50, 70); 
 $ac = rand(0, 1);
 $electricity = rand(40, 70);
 $water = rand(40, 70);
