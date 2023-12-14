@@ -1,0 +1,227 @@
+ul, li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+   
+nav {
+  background-color: rgba(51, 51, 51, 0); 
+}
+  
+.samping{
+  display: flex;
+}
+  
+ul {
+justify-content: space-between;
+align-items: center; 
+padding: 10px 20px;
+}
+  
+ul li {
+  position: relative;
+}
+    
+.left {  
+  margin-right: auto;
+}
+
+ul a {
+  text-decoration: none;
+  color: #000; 
+  font-weight: bold;
+  transition: color 0.3s;
+  display: inline-block;
+  padding: 10px;
+}
+  
+.card-container {
+  display: flex;
+  margin: auto;
+  gap: 25px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 50px;
+  margin: 10px;
+  width: 200px;
+  text-align: center;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card h4{
+  margin: 0;
+}
+
+.control-button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.data h4 {
+  margin: 0;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+.hum{
+  padding-left: 20px;
+  margin: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.temp{
+  padding-right: 20px;
+  margin: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.container {
+  display: flexbox;
+}
+.cardbawa {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 10px;
+  display: flex;
+  align-items: center;
+}
+.logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+.button {
+  background-color: #2a7ddb;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: auto;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 170px);
+  grid-template-rows: repeat(2, 110px);
+  gap: 10px; /* Jarak antar kartu */
+}
+
+.cardgrid {
+  text-align: center;
+  width: 100px; /* Lebar 140px */
+  height: 100px; /* Tinggi1400px */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin: auto;
+}
+.cardgrid img {
+  width: 170px; /* Lebar gambar 100% */
+  height: 170x; /* Tinggi gambar 100% */
+}
+.gabung {
+  display: flex;
+}
+
+.cardgrupbawah{
+  display: flexbox;
+}
+.samping1{
+  display: flex;
+  gap: 90px;
+}
+.samping2{
+  display: flex;
+  gap: 88px;
+}
+.samping3{
+  display: flex;
+  gap: 125px;
+}
+
+.samping4{
+  display: flex;
+  gap: 99px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
